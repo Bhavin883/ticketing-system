@@ -1,16 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AareonTechnicalTest.Models
+namespace Common.Entities
 {
-    public static class PersonConfig
+    public static class TicketConfig
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Ticket>(
+            modelBuilder.Entity<Person>(
                 entity =>
                 {
                     entity.HasKey(e => e.Id);
                 });
+
+            modelBuilder.Entity<Ticket>()
+             .HasMany(c => c.Notes);
+
+
         }
     }
 }

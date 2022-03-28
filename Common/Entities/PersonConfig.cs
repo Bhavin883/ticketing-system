@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace AareonTechnicalTest.Models
+namespace Common.Entities
 {
-    public static class TicketConfig
+    public static class PersonConfig
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Person>(
+            modelBuilder.Entity<Ticket>(
                 entity =>
                 {
                     entity.HasKey(e => e.Id);
