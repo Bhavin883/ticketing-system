@@ -10,7 +10,7 @@ using UseCases.Services;
 using UseCases.TicketUseCase;
 using UseCases.ViewModels;
 using Xunit;
-
+using FluentAssertions;
 namespace Tests
 {
     [Collection("Non-Parallel Collection")]
@@ -44,7 +44,7 @@ namespace Tests
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
             var Tickets = Assert.IsType<Result<List<Ticket>>>(actionResult.Value);
-            Assert.Single(Tickets.Data);
+            Tickets.Data.Count.Should().Be(1);
         }
         [Fact]
         public void When_GetTicketByID_Called_Should_ReturnSucess()
@@ -58,8 +58,7 @@ namespace Tests
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
             var Ticket = Assert.IsType<Result<Ticket>>(actionResult.Value);
-
-            Assert.Equal(1, Ticket.Data.Id);
+            Ticket.Data.Id.Should().Be(1);
         }
         [Fact]
         public void When_CreateTicket_Called_Should_ReturnSucess()
@@ -77,7 +76,7 @@ namespace Tests
             var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
             Assert.True(responseModel.Succeeded);
             var saveTicket = appContext.Tickets.FirstOrDefault();
-            Assert.Equal("Ticket For System Maintanance", Ticket.Content);
+            Ticket.Content.Should().Be("Ticket For System Maintanance");
         }
         [Fact]
         public void When_UpdateTicket_Called_Should_ReturnSucess()
@@ -97,7 +96,7 @@ namespace Tests
             var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
             Assert.True(responseModel.Succeeded);
             Ticket = appContext.Tickets.Where(x => x.Id == 1).FirstOrDefault();
-            Assert.Equal("Ticket Content Updated.", Ticket.Content);
+            Ticket.Content.Should().Be("Ticket Content Updated.");
         }
         [Fact]
         public void When_DeleteTicket_Called_Should_ReturnSucess()
@@ -114,7 +113,7 @@ namespace Tests
             var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
             Assert.True(responseModel.Succeeded);
             Ticket = appContext.Tickets.Where(x => x.Id == 1).FirstOrDefault();
-            Assert.Null(Ticket);
+            Ticket.Should().BeNull();
         }
     }
 }

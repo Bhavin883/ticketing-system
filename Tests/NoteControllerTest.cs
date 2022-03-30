@@ -10,7 +10,7 @@ using UseCases.NoteUseCase;
 using UseCases.Services;
 using UseCases.ViewModels;
 using Xunit;
-
+using FluentAssertions;
 namespace Tests
 {
     [Collection("Non-Parallel Collection")]
@@ -43,7 +43,7 @@ namespace Tests
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
             var Notes = Assert.IsType<Result<List<Note>>>(actionResult.Value);
-            Assert.Equal(2, Notes.Data.Count);
+            Notes.Data.Count.Should().Be(2);
 
         }
         [Fact]
@@ -59,8 +59,7 @@ namespace Tests
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
             var note = Assert.IsType<Result<Note>>(actionResult.Value);
-
-            Assert.Equal(1, note.Data.Id);
+            note.Data.Id.Should().Be(1);
         }
         [Fact]
         public void When_CreateNote_Called_Should_ReturnSucess()
@@ -80,7 +79,7 @@ namespace Tests
             var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
             Assert.True(responseModel.Succeeded);
             var saveNote = appContext.Notes.FirstOrDefault();
-            Assert.Equal("Add Pie chart for customer share", saveNote.Content);
+            saveNote.Content.Should().Be("Add Pie chart for customer share");
         }
         [Fact]
         public void When_UpdateNote_Called_Should_ReturnSucess()
@@ -100,7 +99,7 @@ namespace Tests
             var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
             Assert.True(responseModel.Succeeded);
             note = appContext.Notes.Where(x => x.Id == 1).FirstOrDefault();
-            Assert.Equal("Configure data source from db.", note.Content);
+            note.Content.Should().Be("Configure data source from db.");
         }
         [Fact]
         public void When_DeleteNote_Called_Should_ReturnSucess()
@@ -118,7 +117,7 @@ namespace Tests
             var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
             Assert.True(responseModel.Succeeded);
             var delNote = appContext.Notes.Where(x => x.Id == 1).FirstOrDefault();
-            Assert.Null(delNote);
+            delNote.Should().BeNull();
         }
         [Fact]
         public void When_DeleteNote_Called_And_UserIs_NotAdmin_Should_NotAllow()
@@ -134,8 +133,7 @@ namespace Tests
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
             var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            Assert.Equal("Note can not be deleted, Contact administrator", responseModel.Data.Messsage);
-
+            responseModel.Data.Messsage.Should().Be("Note can not be deleted, Contact administrator");
         }
     }
 }
