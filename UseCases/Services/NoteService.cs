@@ -45,12 +45,15 @@ namespace UseCases.Services
             {
                 _context.Add<Note>(Note);
                 model.Messsage = "Note created successfully";
+                model.IsSuccess = true;
 
                 _context.SaveChanges();
             }
             catch (Exception ex)
             {
                 model.Messsage = "Error : " + ex.Message;
+                model.IsSuccess = false;
+
             }
             return model;
         }
@@ -67,17 +70,25 @@ namespace UseCases.Services
             {
                 Note _note = GetNoteDetailsById(Note.Id);
 
+                if (_note == null)
+                {
+                    throw new Exception("Note not found for given Id.");
+                    model.IsSuccess = false;
+
+                }
                 _note.Content = Note.Content;
                 _note.PersonId = Note.PersonId;
                 _note.TicketId = Note.TicketId;
                 _context.Update<Note>(_note);
                 model.Messsage = "Note has been updated successfully";
-
+                model.IsSuccess = true;
                 _context.SaveChanges();
             }
             catch (Exception ex)
             {
                 model.Messsage = "Error : " + ex.Message;
+                model.IsSuccess = false;
+
             }
             return model;
         }
@@ -100,21 +111,25 @@ namespace UseCases.Services
                         _context.Remove<Note>(_note);
                         _context.SaveChanges();
                         model.Messsage = "Note has been deleted successfully";
+                        model.IsSuccess = true;
                     }
                     else
                     {
                         model.Messsage = "Note Not Found";
+                        model.IsSuccess = false;
                     }
                 }
                 else
                 {
                     model.Messsage = "Note can not be deleted, Contact administrator";
+                    model.IsSuccess = false;
                 }
             }
 
             catch (Exception ex)
             {
                 model.Messsage = "Error : " + ex.Message;
+                model.IsSuccess = false;
             }
             return model;
         }

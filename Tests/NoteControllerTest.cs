@@ -16,7 +16,7 @@ namespace Tests
     [Collection("Non-Parallel Collection")]
     public class NoteControllerTest
     {
-        private readonly NoteController _controller;
+        private readonly NotesController _controller;
         private readonly INoteService _service;
         private ApplicationContext appContext;
         public NoteControllerTest()
@@ -28,7 +28,7 @@ namespace Tests
             appContext.Database.EnsureDeleted();
             appContext.Database.EnsureCreated();
             _service = new NoteService(appContext);
-            _controller = new NoteController(_service, new CreateNoteUseCase(_service), new UpdateNoteUseCase(_service), new DeleteNoteUseCase(_service), new DisplayNoteUseCase(_service), new DisplayAllNoteUseCase(_service));
+            _controller = new NotesController(_service, new CreateNoteUseCase(_service), new UpdateNoteUseCase(_service), new DeleteNoteUseCase(_service), new DisplayNoteUseCase(_service), new DisplayAllNoteUseCase(_service));
         }
         [Fact]
         public void When_GetAllNotes_Called_Should_Return_AllItems()
@@ -38,12 +38,12 @@ namespace Tests
             MockDataProvider.GenerateNoteTestData(appContext);
 
             // Act
-            IActionResult response = _controller.GetAll();
+            IActionResult response = _controller.GetAllNotes();
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
-            var Notes = Assert.IsType<Result<List<Note>>>(actionResult.Value);
-            Notes.Data.Count.Should().Be(2);
+            var Notes = Assert.IsType<List<Note>>(actionResult.Value);
+            Notes.Count.Should().Be(2);
 
         }
         [Fact]
@@ -54,12 +54,12 @@ namespace Tests
             MockDataProvider.GenerateNoteTestData(appContext);
 
             // Act
-            IActionResult response = _controller.GetById(1);
+            IActionResult response = _controller.GetNotesById(1);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
-            var note = Assert.IsType<Result<Note>>(actionResult.Value);
-            note.Data.Id.Should().Be(1);
+            var note = Assert.IsType<Note>(actionResult.Value);
+            note.Id.Should().Be(1);
         }
         [Fact]
         public void When_CreateNote_Called_Should_ReturnSucess()
@@ -72,12 +72,12 @@ namespace Tests
             note.PersonId = 1;
 
             // Act
-            var result = _controller.Create(note);
+            var result = _controller.CreateNote(note);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            Assert.True(responseModel.Succeeded);
+            var responseModel = Assert.IsType<ResponseModel>(actionResult.Value);
+            Assert.True(responseModel.IsSuccess);
             var saveNote = appContext.Notes.FirstOrDefault();
             saveNote.Content.Should().Be("Add Pie chart for customer share");
         }
@@ -92,12 +92,12 @@ namespace Tests
 
             var noteUpdate = NoteMapper.GetUpdateNote(note);
             // Act
-            var result = _controller.Update(noteUpdate);
+            var result = _controller.UpdateNote(noteUpdate);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            Assert.True(responseModel.Succeeded);
+            var responseModel = Assert.IsType<ResponseModel>(actionResult.Value);
+            Assert.True(responseModel.IsSuccess );
             note = appContext.Notes.Where(x => x.Id == 1).FirstOrDefault();
             note.Content.Should().Be("Configure data source from db.");
         }
@@ -110,12 +110,12 @@ namespace Tests
             var note = new DeleteNoteRequest() { Id = 1, IsAdmin = true };
 
             // Act
-            var result = _controller.Delete(note);
+            var result = _controller.DeleteNote(note);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            Assert.True(responseModel.Succeeded);
+            var responseModel = Assert.IsType<ResponseModel>(actionResult.Value);
+            Assert.True(responseModel.IsSuccess);
             var delNote = appContext.Notes.Where(x => x.Id == 1).FirstOrDefault();
             delNote.Should().BeNull();
         }
@@ -128,12 +128,12 @@ namespace Tests
             var note = new DeleteNoteRequest() { Id = 1, IsAdmin = false };
 
             // Act
-            var result = _controller.Delete(note);
+            var result = _controller.DeleteNote(note);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            responseModel.Data.Messsage.Should().Be("Note can not be deleted, Contact administrator");
+            var responseModel = Assert.IsType<ResponseModel>(actionResult.Value);
+            responseModel.Messsage.Should().Be("Note can not be deleted, Contact administrator");
         }
     }
 }

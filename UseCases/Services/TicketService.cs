@@ -47,10 +47,12 @@ namespace UseCases.Services
                 _context.Add<Ticket>(ticket);
                 _context.SaveChanges();
                 model.Messsage = "Ticket has been created successfully";
+                model.IsSuccess = true;
             }
             catch (Exception ex)
             {
                 model.Messsage = "Error : " + ex.Message;
+                model.IsSuccess = false;
             }
             return model;
 
@@ -72,12 +74,13 @@ namespace UseCases.Services
                 _ticket.PersonId = ticket.PersonId;
                 _context.Update<Ticket>(_ticket);
                 model.Messsage = "Ticket has been updated successfully";
-
+                model.IsSuccess = true;
                 _context.SaveChanges();
             }
             catch (Exception ex)
             {
                 model.Messsage = "Error : " + ex.Message;
+                model.IsSuccess = false;
             }
             return model;
         }
@@ -98,15 +101,18 @@ namespace UseCases.Services
                     _context.Remove<Ticket>(_ticket);
                     _context.SaveChanges();
                     model.Messsage = "Ticket has been deleted successfully";
+                    model.IsSuccess = true;
                 }
                 else
                 {
                     model.Messsage = "Ticket not found for given Id";
+                    model.IsSuccess = false;
                 }
             }
             catch (Exception ex)
             {
                 model.Messsage = "Error : " + ex.Message;
+                model.IsSuccess = false;
             }
             return model;
         }

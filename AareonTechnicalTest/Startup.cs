@@ -10,6 +10,9 @@ using UseCases.Services;
 using UseCases.TicketUseCase;
 using UseCases.NoteUseCase;
 using System;
+using System.IO;
+using Microsoft.Extensions.PlatformAbstractions;
+using System.Reflection;
 
 namespace AareonTechnicalTest
 {
@@ -28,11 +31,16 @@ namespace AareonTechnicalTest
             services.AddControllers();
             var DatabasePath = $"{Environment.CurrentDirectory}{System.IO.Path.DirectorySeparatorChar}Ticketing.db";
             services.AddDbContext<ApplicationContext>(c => c.UseSqlite($"Data Source={DatabasePath}"));
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(c =>//
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AareonTechnicalTest", Version = "v1" });
-               
+                // c.IncludeXmlComments(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "AareonTechnicalTest.Api.xml"));
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
+          
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<INoteService, NoteService>();
             services.AddScoped<ICreateTicketUseCase, CreateTicketUseCase>();

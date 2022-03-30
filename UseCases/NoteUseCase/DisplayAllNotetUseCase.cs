@@ -15,10 +15,10 @@ namespace UseCases.NoteUseCase
         {
             _NoteService = NoteService;
         }
-        public IResult<List<Note>> Handle(int request)
+        public List<Note> Handle(int request)
         {
             var DisplayNoteResponse = _NoteService.GetNoteList();
-            return Result<List<Note>>.Success(DisplayNoteResponse);
+            return DisplayNoteResponse;
         }
     }
 }

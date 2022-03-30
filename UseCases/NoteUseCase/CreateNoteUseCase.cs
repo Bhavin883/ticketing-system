@@ -14,11 +14,11 @@ namespace UseCases.NoteUseCase
         {
             _NoteService = NoteService;
         }
-        public IResult<ResponseModel> Handle(CreateNoteRequest request)
+        public ResponseModel Handle(CreateNoteRequest request)
         {
             var Note = NoteMapper.Map(request);
             var CreateNoteResponse = _NoteService.CreateNote(Note);
-            return Result<ResponseModel>.Success(CreateNoteResponse);
+            return CreateNoteResponse;
         }
     }
 }

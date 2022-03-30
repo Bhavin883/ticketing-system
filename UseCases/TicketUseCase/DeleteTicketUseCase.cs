@@ -13,10 +13,10 @@ namespace UseCases.TicketUseCase
         {
             _TicketService = TicketService;
         }
-        public IResult<ResponseModel> Handle(int request)
+        public ResponseModel Handle(int request)
         {
             var DeleteTicketResponse = _TicketService.DeleteTicket(request);
-            return Result<ResponseModel>.Success(DeleteTicketResponse);
+            return DeleteTicketResponse;
         }
     }
 }

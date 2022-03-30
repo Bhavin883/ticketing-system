@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UseCases.Services;
 using UseCases.TicketUseCase;
@@ -8,7 +9,7 @@ namespace AareonTechnicalTest.Controller
     [Route("api/[controller]")]
     [ApiController]
  
-    public class TicketController : ControllerBase
+    public class TicketsController : ControllerBase
     {
         ITicketService _TicketService;
         ICreateTicketUseCase _CreateTicketUseCase;
@@ -16,7 +17,7 @@ namespace AareonTechnicalTest.Controller
         IDeleteTicketUseCase _DeleteTicketUseCase;
         IDisplayTicketUseCase _DisplayTicketUseCase;
         IDisplayAllTicketUseCase _DisplayAllTicketUseCase;
-        public TicketController(ITicketService service, 
+        public TicketsController(ITicketService service, 
             ICreateTicketUseCase createTicketUseCase, 
             IUpdateTicketUseCase updateTicketUseCase,
             IDeleteTicketUseCase deleteTicketUseCase,
@@ -32,12 +33,14 @@ namespace AareonTechnicalTest.Controller
         }
 
         /// <summary>
-        /// get all Tickets
+        /// Get all tickets
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("[action]")]
-        public IActionResult GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetAllTickets()
         {
             try
             {
@@ -54,13 +57,16 @@ namespace AareonTechnicalTest.Controller
 
 
         /// <summary>
-        /// get Ticket details by id
+        /// Get ticket by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("[action]/id")]
-        public IActionResult GetById(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("id")]
+        public IActionResult GetTicketById(int id)
         {
             try
             {
@@ -77,13 +83,14 @@ namespace AareonTechnicalTest.Controller
 
 
         /// <summary>
-        /// save Ticket
+        /// Save ticket
         /// </summary>
         /// <param name="TicketModel"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("[action]")]
-        public IActionResult Create(CreateTicketRequest TicketModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult CreateTicket(CreateTicketRequest TicketModel)
         {
             try
             {
@@ -97,13 +104,14 @@ namespace AareonTechnicalTest.Controller
         }
 
         /// <summary>
-        /// update Ticket
+        /// Update ticket
         /// </summary>
         /// <param name="TicketModel"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("[action]")]
-        public IActionResult Update(UpdateTicketRequest TicketModel)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult UpdateTicket(UpdateTicketRequest TicketModel)
         {
             try
             {
@@ -118,13 +126,14 @@ namespace AareonTechnicalTest.Controller
 
 
         /// <summary>
-        /// delete Ticket  
+        /// Delete ticket  
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("[action]")]
-        public IActionResult Delete(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteTicket(int id)
         {
             try
             {

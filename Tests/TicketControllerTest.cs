@@ -16,7 +16,7 @@ namespace Tests
     [Collection("Non-Parallel Collection")]
     public class TicketControllerTest
     {
-        private readonly TicketController _controller;
+        private readonly TicketsController _controller;
         private readonly ITicketService _service;
         private readonly ApplicationContext appContext;
 
@@ -30,7 +30,7 @@ namespace Tests
             appContext.Database.EnsureCreated();
 
             _service = new TicketService(appContext);
-            _controller = new TicketController(_service, new CreateTicketUseCase(_service), new UpdateTicketUseCase(_service), new DeleteTicketUseCase(_service), new DisplayTicketUseCase(_service), new DisplayAllTicketUseCase(_service));
+            _controller = new TicketsController(_service, new CreateTicketUseCase(_service), new UpdateTicketUseCase(_service), new DeleteTicketUseCase(_service), new DisplayTicketUseCase(_service), new DisplayAllTicketUseCase(_service));
         }
 
         [Fact]
@@ -39,12 +39,12 @@ namespace Tests
             //Arrange
             MockDataProvider.GeneratePersonAndTicketTestData(appContext);
             // Act
-            IActionResult response = _controller.GetAll();
+            IActionResult response = _controller.GetAllTickets();
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
-            var Tickets = Assert.IsType<Result<List<Ticket>>>(actionResult.Value);
-            Tickets.Data.Count.Should().Be(1);
+            var Tickets = Assert.IsType<List<Ticket>>(actionResult.Value);
+            Tickets.Count.Should().Be(1);
         }
         [Fact]
         public void When_GetTicketByID_Called_Should_ReturnSucess()
@@ -53,12 +53,12 @@ namespace Tests
             MockDataProvider.GeneratePersonAndTicketTestData(appContext);
 
             // Act
-            IActionResult response = _controller.GetById(1);
+            IActionResult response = _controller.GetTicketById(1);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(response);
-            var Ticket = Assert.IsType<Result<Ticket>>(actionResult.Value);
-            Ticket.Data.Id.Should().Be(1);
+            var Ticket = Assert.IsType<Ticket>(actionResult.Value);
+            Ticket.Id.Should().Be(1);
         }
         [Fact]
         public void When_CreateTicket_Called_Should_ReturnSucess()
@@ -69,12 +69,12 @@ namespace Tests
             Ticket.PersonId = 1;
 
             // Act
-            var result = _controller.Create(Ticket);
+            var result = _controller.CreateTicket(Ticket);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            Assert.True(responseModel.Succeeded);
+            var responseModel = Assert.IsType<ResponseModel>(actionResult.Value);
+            Assert.True(responseModel.IsSuccess);
             var saveTicket = appContext.Tickets.FirstOrDefault();
             Ticket.Content.Should().Be("Ticket For System Maintanance");
         }
@@ -89,12 +89,12 @@ namespace Tests
 
             var TicketUpdate = TicketMapper.GetUpdateTicket(Ticket);
             // Act
-            var result = _controller.Update(TicketUpdate);
+            var result = _controller.UpdateTicket(TicketUpdate);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            Assert.True(responseModel.Succeeded);
+            var responseModel = Assert.IsType<ResponseModel>(actionResult.Value);
+            Assert.True(responseModel.IsSuccess);
             Ticket = appContext.Tickets.Where(x => x.Id == 1).FirstOrDefault();
             Ticket.Content.Should().Be("Ticket Content Updated.");
         }
@@ -106,12 +106,12 @@ namespace Tests
             var Ticket = _service.GetTicketDetailsById(1);
 
             // Act
-            var result = _controller.Delete(Ticket.Id);
+            var result = _controller.DeleteTicket(Ticket.Id);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result);
-            var responseModel = Assert.IsType<Result<ResponseModel>>(actionResult.Value);
-            Assert.True(responseModel.Succeeded);
+            var responseModel = Assert.IsType<ResponseModel>(actionResult.Value);
+            Assert.True(responseModel.IsSuccess);
             Ticket = appContext.Tickets.Where(x => x.Id == 1).FirstOrDefault();
             Ticket.Should().BeNull();
         }

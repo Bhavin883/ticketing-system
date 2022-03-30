@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UseCases.NoteUseCase;
 using UseCases.Services;
@@ -6,7 +7,7 @@ namespace AareonTechnicalTest.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NoteController : ControllerBase
+    public class NotesController : ControllerBase
     {
         INoteService _NoteService;
         ICreateNoteUseCase _CreateNoteUseCase;
@@ -14,7 +15,7 @@ namespace AareonTechnicalTest.Controller
         IDeleteNoteUseCase _DeleteNoteUseCase;
         IDisplayNoteUseCase _DisplayNoteUseCase;
         IDisplayAllNoteUseCase _DisplayAllNoteUseCase;
-        public NoteController(INoteService service,
+        public NotesController(INoteService service,
             ICreateNoteUseCase createNoteUseCase,
             IUpdateNoteUseCase updateNoteUseCase,
             IDeleteNoteUseCase deleteNoteUseCase,
@@ -30,12 +31,14 @@ namespace AareonTechnicalTest.Controller
         }
 
         /// <summary>
-        /// get all Notes
+        /// Get all notes
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("[action]")]
-        public IActionResult GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetAllNotes()
         {
             try
             {
@@ -52,13 +55,16 @@ namespace AareonTechnicalTest.Controller
 
 
         /// <summary>
-        /// get Note details by id
+        /// Get note by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("[action]/id")]
-        public IActionResult GetById(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("id")]
+        public IActionResult GetNotesById(int id)
         {
             try
             {
@@ -74,13 +80,14 @@ namespace AareonTechnicalTest.Controller
         }
 
         /// <summary>
-        /// update Note
+        /// Update note
         /// </summary>
         /// <param name="Note"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("[action]")]
-        public IActionResult Create(CreateNoteRequest Note)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult CreateNote(CreateNoteRequest Note)
         {
             try
             {
@@ -94,13 +101,14 @@ namespace AareonTechnicalTest.Controller
         }
 
         /// <summary>
-        /// save Note
+        /// Save note
         /// </summary>
         /// <param name="Note"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("[action]")]
-        public IActionResult Update(UpdateNoteRequest Note)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult UpdateNote(UpdateNoteRequest Note)
         {
             try
             {
@@ -113,13 +121,14 @@ namespace AareonTechnicalTest.Controller
             }
         }
         /// <summary>
-        /// delete Note  
+        /// Delete note  
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("[action]")]
-        public IActionResult Delete(DeleteNoteRequest Note)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult DeleteNote(DeleteNoteRequest Note)
         {
             try
             {

@@ -14,10 +14,10 @@ namespace UseCases.TicketUseCase
         {
             _TicketService = TicketService;
         }
-        public IResult<Ticket> Handle(int request)
+        public Ticket Handle(int request)
         {
             var DisplayTicketResponse = _TicketService.GetTicketDetailsById(request);
-            return Result<Ticket>.Success(DisplayTicketResponse);
+            return DisplayTicketResponse;
         }
     }
 }

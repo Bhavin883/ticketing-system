@@ -2,6 +2,6 @@
 {
     public interface IUseCaseHandler<in TIn, TOut>
     {
-        IResult<TOut> Handle(TIn request);
+        TOut Handle(TIn request);
     }
 }

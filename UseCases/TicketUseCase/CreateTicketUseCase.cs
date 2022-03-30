@@ -14,11 +14,11 @@ namespace UseCases.TicketUseCase
         {
             _TicketService = TicketService;
         }
-        public IResult<ResponseModel> Handle(CreateTicketRequest request)
+        public ResponseModel Handle(CreateTicketRequest request)
         {
             var ticket = TicketMapper.Map(request);
             var CreateTicketResponse = _TicketService.CreateTicket(ticket);
-            return Result<ResponseModel>.Success(CreateTicketResponse);
+            return CreateTicketResponse;
         }
     }
 }
